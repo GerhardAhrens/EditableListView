@@ -93,6 +93,11 @@ namespace EditableListView.Extension
 
         public static DataTable ToDataTable<TSource>(this ICollectionView @this)
         {
+            if (@this == null)
+            {
+                return default(DataTable);
+            }
+
             DataTable tb = new DataTable(typeof(TSource).Name);
             PropertyInfo[] props = typeof(TSource).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
