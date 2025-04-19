@@ -1,8 +1,8 @@
-﻿namespace EditableListView.Model
+﻿namespace EditableListView.Core
 {
     using System.Collections.ObjectModel;
 
-    public class Model
+    public class DemoData
     {
         public ObservableCollection<ViewItem> Items
         {

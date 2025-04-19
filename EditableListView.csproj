@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <Folder Include="Behavior\" />
-    <Folder Include="Model\" />
+    <Folder Include="Extension\" />
     <Folder Include="XAMLConverter\" />
   </ItemGroup>
 
