@@ -11,6 +11,8 @@
   <ItemGroup>
     <Folder Include="Behavior\" />
     <Folder Include="Extension\" />
+    <Folder Include="Core\" />
+    <Folder Include="Resources\Style\" />
     <Folder Include="XAMLConverter\" />
   </ItemGroup>
 

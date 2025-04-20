@@ -6,10 +6,10 @@
     xmlns:converter="clr-namespace:EditableListView.XAMLConverter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:local="clr-namespace:EditableListView"
+    xmlns:localStatic="clr-namespace:EditableListView.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Editable ListView"
-    Width="800"
+    Width="850"
     Height="450"
     mc:Ignorable="d">
 
@@ -55,6 +55,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -75,6 +76,242 @@
                     <Button x:Name="btnClearFilter" Content="Löschen Filter" />
                 </StackPanel>
             </GroupBox>
+
+            <GroupBox Header="Grouping">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="5,0" Text="Group By :" />
+                    <ComboBox
+                        x:Name="cmbGroups"
+                        Width="100"
+                        ItemsSource="{Binding Path=Columns}" />
+
+                    <Button
+                        x:Name="btnGroup"
+                        Margin="5,0"
+                        Content="Erstelle Gruppe" />
+                    <Button x:Name="btnClearGroup" Content="Lösche Gruppe" />
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
+
+        <ListView
+            x:Name="lvItems"
+            Grid.Row="1"
+            GridViewColumnHeader.Click="OnListViewHeaderClick"
+            IsSynchronizedWithCurrentItem="True"
+            IsTabStop="False"
+            ItemsSource="{Binding Path=ListViewSource}"
+            ScrollViewer.IsDeferredScrollingEnabled="False">
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClickHandler" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="mnuCurrentRow" Header="Aktuell" />
+                </ContextMenu>
+            </ListView.ContextMenu>
+
+            <ListView.View>
+                <GridView AllowsColumnReorder="True">
+                    <GridViewColumn Width="50" Header="Id">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Width="35"
+                                    Background="Aqua"
+                                    Text="{Binding Path=Id}"
+                                    TextAlignment="Right" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="170" Header="Name">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Style="{StaticResource ListViewUnSelected}" Text="{Binding Path=Name}" />
+                                    <TextBox
+                                        Width="150"
+                                        Style="{StaticResource ListViewSelected}"
+                                        Text="{Binding Path=Name}">
+                                        <i:Interaction.Behaviors>
+                                            <behavior:TextBoxEnterKeyUpdateBehavior />
+                                            <behavior:SelectAllTextOnFocusMultiBehavior />
+                                        </i:Interaction.Behaviors>
+                                    </TextBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="115" Header="Developer">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Style="{StaticResource ResourceKey=ListViewUnSelected}" Text="{Binding Path=Developer}" />
+                                    <ComboBox
+                                        Width="100"
+                                        IsEditable="True"
+                                        IsTextSearchEnabled="True"
+                                        ItemsSource="{Binding Path=DataContext.DeveloperList, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                        SelectedItem="{Binding Path=Developer}"
+                                        Style="{StaticResource ResourceKey=ListViewSelected}">
+                                        <i:Interaction.Behaviors>
+                                            <behavior:ComboBoxEnterKeyUpdateBehavior />
+                                        </i:Interaction.Behaviors>
+                                    </ComboBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="90" Header="Gehalt">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock
+                                        Width="80"
+                                        Style="{StaticResource ResourceKey=ListViewUnSelected}"
+                                        Text="{Binding Path=Gehalt, StringFormat=C2}"
+                                        TextAlignment="Right" />
+
+                                    <TextBox
+                                        Width="80"
+                                        HorizontalContentAlignment="Right"
+                                        Style="{StaticResource ResourceKey=ListViewSelected}"
+                                        Text="{Binding Path=Gehalt, StringFormat=C2}">
+                                        <i:Interaction.Behaviors>
+                                            <behavior:TextBoxEnterKeyUpdateBehavior />
+                                            <behavior:SelectAllTextOnFocusMultiBehavior />
+                                        </i:Interaction.Behaviors>
+                                    </TextBox>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="60" Header="Status">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <CheckBox IsChecked="{Binding Path=Status}" Style="{StaticResource ResourceKey=ListViewUnSelectedCB}" />
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!--#region Navigation-->
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button
+                x:Name="BtnFirst"
+                Content="&lt;|"
+                Tag="0" />
+
+            <Button
+                x:Name="BtnNext"
+                Content="&lt;"
+                Tag="1" />
+
+            <Button
+                x:Name="BtnBefore"
+                Content="&gt;"
+                Tag="2" />
+
+            <Button
+                x:Name="BtnLast"
+                Content="|&gt;"
+                Tag="3" />
+
+            <Button
+                x:Name="btnEvaluate"
+                Margin="5,0"
+                HorizontalAlignment="Right"
+                Content="Aktueller Eintrag anzeigen" />
+
+            <Button
+                x:Name="btnSave"
+                Margin="5,0"
+                HorizontalAlignment="Right"
+                Content="Aktueller Sicht speichern" />
+
+            <Button
+                x:Name="btnOpen"
+                Margin="5,0"
+                HorizontalAlignment="Right"
+                Content="Letzte Sicht landen" />
+        </StackPanel>
+        <!--#endregion Navigation-->
+
+        <!--#region Statuszeile-->
+        <StatusBar
+            Grid.Row="3"
+            Height="Auto"
+            Background="Transparent"
+            DataContext="StatusMain"
+            FontSize="13">
+            <StatusBarItem DockPanel.Dock="Left">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{StaticResource ResourceKey=IconStatusbarUser}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=CurrentUser, Source={x:Static localStatic:StatusbarMain.Statusbar}}" />
+                </StackPanel>
+            </StatusBarItem>
+
+            <StatusBarItem DockPanel.Dock="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{StaticResource ResourceKey=IconStatusbarCalendar}" />
+                    <TextBlock
+                        x:Name="dtStatusBarDate"
+                        Margin="5,0,10,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=CurrentDate, Source={x:Static localStatic:StatusbarMain.Statusbar}}" />
+                </StackPanel>
+            </StatusBarItem>
+
+            <Separator Background="Black" />
+
+            <StatusBarItem DockPanel.Dock="Left" ToolTip="{Binding Path=DatabaseInfoTooltip, Source={x:Static localStatic:StatusbarMain.Statusbar}}">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{StaticResource ResourceKey=IconStatusbarDatabase}" />
+
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=DatabaseInfo, Source={x:Static localStatic:StatusbarMain.Statusbar}}" />
+                </StackPanel>
+            </StatusBarItem>
+
+            <Separator Background="Black" />
+
+            <StatusBarItem DockPanel.Dock="Left">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{StaticResource ResourceKey=IconStatusbarNotification}" />
+                    <TextBlock
+                        Margin="5,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=Notification, Source={x:Static localStatic:StatusbarMain.Statusbar}}" />
+                </StackPanel>
+            </StatusBarItem>
+
+        </StatusBar>
+        <!--#endregion Statuszeile-->
     </Grid>
 </Window>
