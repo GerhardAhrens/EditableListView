@@ -29,6 +29,7 @@
         public event PropertyChangedEventHandler PropertyChanged;
         private DispatcherTimer statusBarDate = null;
         private IEnumerable<string> developerList = null;
+        private IEnumerable<string> columns = null;
         private ICollectionView listviewSource = null;
 
         public MainWindow()
@@ -54,12 +55,6 @@
             WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.btnSave, "Click", this.OnSaveClick);
 
             WeakEventManager<MenuItem, RoutedEventArgs>.AddHandler(this.mnuCurrentRow, "Click", this.OnCurrentListViewItemClick);
-
-            this.DataModel = new DemoData();
-            this.ListViewSource = CollectionViewSource.GetDefaultView(this.DataModel.Items);
-            this.DeveloperList = this.DataModel.AvailableDevelopment;
-            this.grdMain.DataContext = this.DataModel;
-            this.lvItems.ItemsSource = this.ListViewSource;
 
             this.DataContext = this;
         }
@@ -92,9 +87,27 @@
             }
         }
 
+        public IEnumerable<string> Columns
+        {
+            get { return this.columns; }
+            set
+            {
+                if (this.columns != value)
+                {
+                    this.columns = value;
+                    this.OnPropertyChanged();
+                }
+            }
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             this.lvItems.Focus();
+
+            this.DataModel = new DemoData();
+            this.Columns = this.DataModel.Columns;
+            this.ListViewSource = CollectionViewSource.GetDefaultView(this.DataModel.Items);
+            this.DeveloperList = this.DataModel.AvailableDevelopment;
 
             int count = 0;
             if (ListViewSource != null)

@@ -63,10 +63,4 @@
         public float Gehalt { get; set; }
         public bool Status { get; set; }
     }
-
-    public class ViewItemExport
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
 }
