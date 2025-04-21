@@ -166,9 +166,11 @@
                                     <ComboBox
                                         Width="100"
                                         IsEditable="True"
+                                        IsTextSearchCaseSensitive="False"
                                         IsTextSearchEnabled="True"
-                                        ItemsSource="{Binding Path=DeveloperList, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:MainWindow}}}"
+                                        ItemsSource="{Binding Path=DataContext.DeveloperList, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}"
                                         SelectedItem="{Binding Path=Developer}"
+                                        StaysOpenOnEdit="True"
                                         Style="{StaticResource ResourceKey=ListViewSelected}">
                                         <i:Interaction.Behaviors>
                                             <behavior:ComboBoxEnterKeyUpdateBehavior />

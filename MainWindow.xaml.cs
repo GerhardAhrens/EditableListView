@@ -105,8 +105,8 @@
             this.lvItems.Focus();
 
             this.DataModel = new DemoData();
-            this.Columns = this.DataModel.Columns;
             this.ListViewSource = CollectionViewSource.GetDefaultView(this.DataModel.Items);
+            this.Columns = this.DataModel.Columns;
             this.DeveloperList = this.DataModel.AvailableDevelopment;
 
             int count = 0;
