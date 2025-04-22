@@ -10,15 +10,12 @@
     using System.Text.Json;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Controls.Primitives;
     using System.Windows.Data;
     using System.Windows.Input;
     using System.Windows.Threading;
 
     using EditableListView.Core;
     using EditableListView.Extension;
-
-    using Microsoft.VisualBasic;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -45,10 +42,10 @@
             WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.btnGroup, "Click", this.OnClickGroup);
             WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.btnClearGroup, "Click", this.OnClickClearGroup);
 
-            WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.btnEvaluate, "Click", this.OnCurrentListViewItemClick);
+            WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.btnShowDetail, "Click", this.OnCurrentListViewItemClick);
             WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.BtnFirst, "Click", this.OnNavigationClick);
-            WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.BtnBefore, "Click", this.OnNavigationClick);
             WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.BtnNext, "Click", this.OnNavigationClick);
+            WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.BtnPrevious, "Click", this.OnNavigationClick);
             WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.BtnLast, "Click", this.OnNavigationClick);
 
             WeakEventManager<Button, RoutedEventArgs>.AddHandler(this.btnOpen, "Click", this.OnOpenClick);
@@ -105,6 +102,7 @@
             this.lvItems.Focus();
 
             this.DataModel = new DemoData();
+
             this.ListViewSource = CollectionViewSource.GetDefaultView(this.DataModel.Items);
             this.Columns = this.DataModel.Columns;
             this.DeveloperList = this.DataModel.AvailableDevelopment;
@@ -262,6 +260,8 @@
                     this.ListViewSource.MoveCurrentToLast();
                     break;
             }
+
+            this.lvItems.ScrollIntoView(this.ListViewSource.CurrentItem);
         }
 
         private void InitTimer()

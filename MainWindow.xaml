@@ -10,7 +10,7 @@
     xmlns:localStatic="clr-namespace:EditableListView.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Editable ListView"
-    Width="850"
+    Width="750"
     Height="450"
     mc:Ignorable="d">
 
@@ -53,44 +53,66 @@
 
     <Grid x:Name="grdMain">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="50" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="25" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <GroupBox Header="Filter">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="5,0" Text="Filter By :" />
+            <GroupBox Header="Filter für Spalte">
+                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                     <ComboBox
                         x:Name="cmbProperty"
                         Width="100"
-                        ItemsSource="{Binding Path=Columns}" />
+                        IsEditable="True"
+                        ItemsSource="{Binding Path=Columns}"
+                        SelectedIndex="-1" />
                     <TextBox x:Name="txtFilter" MinWidth="100" />
 
                     <Button
                         x:Name="btnFilter"
-                        Margin="5,0"
-                        Content="Ausführen Filter" />
+                        Width="50"
+                        Margin="5,0">
+                        <Path
+                            Data="{StaticResource ResourceKey=IconFilterStart}"
+                            Fill="Green"
+                            Stretch="Uniform" />
+                    </Button>
 
-                    <Button x:Name="btnClearFilter" Content="Löschen Filter" />
+                    <Button x:Name="btnClearFilter" Width="50">
+                        <Path
+                            Data="{StaticResource ResourceKey=IconFilterDelete}"
+                            Fill="Green"
+                            Stretch="Uniform" />
+                    </Button>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Grouping">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="5,0" Text="Group By :" />
+            <GroupBox Header="Gruppieren für Spalte">
+                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                     <ComboBox
                         x:Name="cmbGroups"
                         Width="100"
-                        ItemsSource="{Binding Path=Columns}" />
+                        IsEditable="True"
+                        ItemsSource="{Binding Path=Columns}"
+                        SelectedIndex="-1" />
 
                     <Button
                         x:Name="btnGroup"
-                        Margin="5,0"
-                        Content="Erstelle Gruppe" />
-                    <Button x:Name="btnClearGroup" Content="Lösche Gruppe" />
+                        Width="50"
+                        Margin="5,0">
+                        <Path
+                            Data="{StaticResource ResourceKey=IconGroupCreate}"
+                            Fill="Green"
+                            Stretch="Uniform" />
+                    </Button>
+                    <Button x:Name="btnClearGroup" Width="50">
+                        <Path
+                            Data="{StaticResource ResourceKey=IconGroupDelete}"
+                            Fill="Green"
+                            Stretch="Uniform" />
+                    </Button>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
@@ -223,41 +245,76 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button
                 x:Name="BtnFirst"
-                Content="&lt;|"
-                Tag="0" />
+                Width="20"
+                Margin="5,0,0,0"
+                Tag="0">
+                <Path
+                    Data="{StaticResource ResourceKey=IconFirst}"
+                    Fill="Blue"
+                    Stretch="Uniform" />
+            </Button>
+
+            <Button
+                x:Name="BtnPrevious"
+                Width="20"
+                Margin="5,0,0,0"
+                Tag="1">
+                <Path
+                    Data="{StaticResource ResourceKey=IconArrowPrevious}"
+                    Fill="Blue"
+                    Stretch="Uniform" />
+            </Button>
 
             <Button
                 x:Name="BtnNext"
-                Content="&lt;"
-                Tag="1" />
-
-            <Button
-                x:Name="BtnBefore"
-                Content="&gt;"
-                Tag="2" />
+                Width="20"
+                Tag="2">
+                <Path
+                    Data="{StaticResource ResourceKey=IconArrowNext}"
+                    Fill="Blue"
+                    Stretch="Uniform" />
+            </Button>
 
             <Button
                 x:Name="BtnLast"
-                Content="|&gt;"
-                Tag="3" />
+                Width="20"
+                Margin="5,0,0,0"
+                Tag="3">
+                <Path
+                    Data="{StaticResource ResourceKey=IconLast}"
+                    Fill="Blue"
+                    Stretch="Uniform" />
+            </Button>
 
             <Button
-                x:Name="btnEvaluate"
-                Margin="5,0"
-                HorizontalAlignment="Right"
-                Content="Aktueller Eintrag anzeigen" />
+                x:Name="btnShowDetail"
+                Width="30"
+                Margin="20,0,0,0">
+                <Path
+                    Data="{StaticResource ResourceKey=IconShowItem}"
+                    Fill="Blue"
+                    Stretch="Uniform" />
+            </Button>
 
             <Button
                 x:Name="btnSave"
-                Margin="5,0"
-                HorizontalAlignment="Right"
-                Content="Aktueller Sicht speichern" />
+                Width="30"
+                Margin="5,0">
+                <Path
+                    Data="{StaticResource ResourceKey=IconWriteData}"
+                    Fill="Blue"
+                    Stretch="Uniform" />
+            </Button>
 
             <Button
                 x:Name="btnOpen"
-                Margin="5,0"
-                HorizontalAlignment="Right"
-                Content="Letzte Sicht landen" />
+                Width="30"
+                Margin="5,0">
+                <Path
+                    Data="{StaticResource ResourceKey=IconLoadData}"
+                    Fill="Blue"
+                    Stretch="Uniform" />
+            </Button>
         </StackPanel>
         <!--#endregion Navigation-->
 

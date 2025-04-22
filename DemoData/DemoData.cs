@@ -1,6 +1,10 @@
 ﻿namespace EditableListView.Core
 {
     using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
 
     public class DemoData
     {
@@ -55,12 +59,254 @@
             return items;
         }
     }
-    public class ViewItem
+    public class ViewItem : INotifyPropertyChanged
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string Developer { get; set; }
-        public float Gehalt { get; set; }
-        public bool Status { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private string _Id;
+        public string Id
+        {
+            get => this._Id;
+            set
+            {
+                if (this._Id != value)
+                {
+                    this._Id = value;
+                }
+            }
+        }
+
+        private string _Name;
+        public string Name
+        {
+            get => this._Name;
+            set
+            {
+                if (this._Name != value)
+                {
+                    this._Name = value;
+                }
+            }
+        }
+
+        private string _Developer;
+        public string Developer
+        {
+            get => this._Developer;
+            set
+            {
+                if (this._Developer != value)
+                {
+                    this._Developer = value;
+                }
+            }
+        }
+
+        private float _Gehalt;
+        public float Gehalt
+        {
+            get => this._Gehalt;
+            set
+            {
+                if (this._Gehalt != value)
+                {
+                    this._Gehalt = value;
+                }
+            }
+        }
+
+        private bool _Status;
+        public bool Status
+        {
+            get => this._Status;
+            set
+            {
+                if (this._Status != value)
+                {
+                    this._Status = value;
+                }
+            }
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+            if (handler == null)
+            {
+                return;
+            }
+
+            var e = new PropertyChangedEventArgs(propertyName);
+            handler(this, e);
+        }
+    }
+
+    public class ViewItemCT : IChangeTracking
+    {
+        private string _Id;
+        public string Id
+        {
+            get => this._Id;
+            set
+            {
+                if (this._Id != value)
+                {
+                    this._Id = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        private string _Name;
+        public string Name
+        {
+            get => this._Name;
+            set
+            {
+                if (this._Name != value)
+                {
+                    this._Name = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        private string _Developer;
+        public string Developer
+        {
+            get => this._Developer;
+            set
+            {
+                if (this._Developer != value)
+                {
+                    this._Developer = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        private float _Gehalt;
+        public float Gehalt
+        {
+            get => this._Gehalt;
+            set
+            {
+                if (this._Gehalt != value)
+                {
+                    this._Gehalt = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        private bool _Status;
+        public bool Status
+        {
+            get => this._Status;
+            set
+            {
+                if (this._Status != value)
+                {
+                    this._Status = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        public bool IsChanged { get; private set; }
+        public void AcceptChanges() => IsChanged = false;
+    }
+
+    public class ViewItemTracking : IRevertibleChangeTracking
+    {
+        Dictionary<string, object> _Values = new Dictionary<string, object>();
+
+        private string _Id;
+        public string Id
+        {
+            get => this._Id;
+            set
+            {
+                if (this._Id != value)
+                {
+                    this._Id = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        private string _Name;
+        public string Name
+        {
+            get => this._Name;
+            set
+            {
+                if (this._Name != value)
+                {
+                    this._Name = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        private string _Developer;
+        public string Developer
+        {
+            get => this._Developer;
+            set
+            {
+                if (this._Developer != value)
+                {
+                    this._Developer = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        private float _Gehalt;
+        public float Gehalt
+        {
+            get => this._Gehalt;
+            set
+            {
+                if (this._Gehalt != value)
+                {
+                    this._Gehalt = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        private bool _Status;
+        public bool Status
+        {
+            get => this._Status;
+            set
+            {
+                if (this._Status != value)
+                {
+                    this._Status = value;
+                    this.IsChanged = true;
+                }
+            }
+        }
+
+        public bool IsChanged { get; private set; }
+
+        public void RejectChanges()
+        {
+            foreach (var property in _Values)
+            {
+                this.GetType().GetRuntimeProperty(property.Key).SetValue(this, property.Value);
+            }
+
+            this.AcceptChanges();
+        }
+
+        public void AcceptChanges()
+        {
+            this._Values.Clear();
+            this.IsChanged = false;
+        }
     }
 }
