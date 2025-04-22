@@ -3,12 +3,13 @@
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
     public class DemoData
     {
-        public ObservableCollection<ViewItem> Items
+        public TrulyObservableCollection<ViewItem> Items
         {
             get
             {
@@ -32,21 +33,24 @@
             }
         }
 
-        private ObservableCollection<ViewItem> LoadItems()
+        private TrulyObservableCollection<ViewItem> LoadItems()
         {
-            ObservableCollection<ViewItem> items = new ObservableCollection<ViewItem>();
+            TrulyObservableCollection<ViewItem> items = new TrulyObservableCollection<ViewItem>();
+
+            items.CollectionChanged += this.OnCollectionChanged;
+            items.ItemPropertyChanged += this.PropertyChangedHandler;
 
             items.Add(new ViewItem { Id = "1", Name = "Horst", Developer = "WPF", Gehalt = 50000.20f, Status = true });
             items.Add(new ViewItem { Id = "2", Name = "Horst", Developer = "ASP.NET", Gehalt = 89000.20f, Status = true });
             items.Add(new ViewItem { Id = "3", Name = "Gerhard", Developer = "ASP.NET", Gehalt = 95000.20f, Status = true });
-            items.Add(new ViewItem { Id = "4", Name = "Kunal", Developer = "Silverlight", Gehalt = 26000.20f , Status = false });
-            items.Add(new ViewItem { Id = "5", Name = "Hanselman", Developer = "ASP.NET", Gehalt = 78000.20f , Status = true });
-            items.Add(new ViewItem { Id = "6", Name = "Peter", Developer = "WPF", Gehalt = 37000.20f , Status = true });
-            items.Add(new ViewItem { Id = "7", Name = "Tim", Developer = "Silverlight", Gehalt = 45000.20f , Status = false });
-            items.Add(new ViewItem { Id = "8", Name = "John", Developer = "ASP.NET", Gehalt = 70000.20f , Status = true });
-            items.Add(new ViewItem { Id = "9", Name = "Jamal", Developer = "ASP.NET", Gehalt = 40000.20f , Status = false });
-            items.Add(new ViewItem { Id = "10", Name = "Gerhard", Developer = "C#", Gehalt = 40000.20f , Status = true });
-            items.Add(new ViewItem { Id = "11", Name = "Gerhard", Developer = "WPF", Gehalt = 40000.20f , Status = true });
+            items.Add(new ViewItem { Id = "4", Name = "Kunal", Developer = "Silverlight", Gehalt = 26000.20f, Status = false });
+            items.Add(new ViewItem { Id = "5", Name = "Hanselman", Developer = "ASP.NET", Gehalt = 78000.20f, Status = true });
+            items.Add(new ViewItem { Id = "6", Name = "Peter", Developer = "WPF", Gehalt = 37000.20f, Status = true });
+            items.Add(new ViewItem { Id = "7", Name = "Tim", Developer = "Silverlight", Gehalt = 45000.20f, Status = false });
+            items.Add(new ViewItem { Id = "8", Name = "John", Developer = "ASP.NET", Gehalt = 70000.20f, Status = true });
+            items.Add(new ViewItem { Id = "9", Name = "Jamal", Developer = "ASP.NET", Gehalt = 40000.20f, Status = false });
+            items.Add(new ViewItem { Id = "10", Name = "Gerhard", Developer = "C#", Gehalt = 40000.20f, Status = true });
+            items.Add(new ViewItem { Id = "11", Name = "Gerhard", Developer = "WPF", Gehalt = 40000.20f, Status = true });
             items.Add(new ViewItem { Id = "12", Name = "Peter", Developer = "C#", Gehalt = 37000.20f, Status = true });
             items.Add(new ViewItem { Id = "13", Name = "Peter", Developer = "ASP.Net", Gehalt = 37000.20f, Status = true });
             items.Add(new ViewItem { Id = "14", Name = "Gerhard", Developer = "Fortran", Gehalt = 40000.20f, Status = true });
@@ -58,7 +62,33 @@
 
             return items;
         }
+
+        private void PropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            string msg = $"{DateTime.Now.ToString()}, Spalte geändert: {e.PropertyName}, Name: {((ViewItem)sender).Name}, Developer: {((ViewItem)sender).Developer}";
+            Debug.WriteLine(msg);
+            return;
+        }
+
+        private void OnCollectionChanged(object sender, EventArgs e)
+        {
+            if (((NotifyCollectionChangedEventArgs)e).Action == NotifyCollectionChangedAction.Add)
+            {
+                string msg = $"{DateTime.Now.ToString()}, Eintrag hinzugefügt";
+                Debug.WriteLine(msg);
+            }
+            else
+            {
+                string msg = $"{DateTime.Now.ToString()}, Liste geändert";
+                Debug.WriteLine(msg);
+                int count = ((TrulyObservableCollection<ViewItem>)sender).Count;
+                StatusbarMain.Statusbar.SetNotification($"Geändert: Anzahl: {count}");
+            }
+
+            return;
+        }
     }
+
     public class ViewItem : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -72,6 +102,7 @@
                 if (this._Id != value)
                 {
                     this._Id = value;
+                    this.OnPropertyChanged();
                 }
             }
         }
@@ -85,6 +116,7 @@
                 if (this._Name != value)
                 {
                     this._Name = value;
+                    this.OnPropertyChanged();
                 }
             }
         }
@@ -98,6 +130,7 @@
                 if (this._Developer != value)
                 {
                     this._Developer = value;
+                    this.OnPropertyChanged();
                 }
             }
         }
@@ -111,6 +144,7 @@
                 if (this._Gehalt != value)
                 {
                     this._Gehalt = value;
+                    this.OnPropertyChanged();
                 }
             }
         }
@@ -124,6 +158,7 @@
                 if (this._Status != value)
                 {
                     this._Status = value;
+                    this.OnPropertyChanged();
                 }
             }
         }
@@ -309,4 +344,46 @@
             this.IsChanged = false;
         }
     }
+
+    #region TrulyObservableCollection
+    public class TrulyObservableCollection<T> : ObservableCollection<T> where T : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler ItemPropertyChanged;
+
+        public TrulyObservableCollection() : base()
+        {
+            this.CollectionChanged += new NotifyCollectionChangedEventHandler(this.OnObservableCollectionChanged);
+        }
+
+        private void OnObservableCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Object item in e.NewItems)
+                {
+                    (item as INotifyPropertyChanged).PropertyChanged += new PropertyChangedEventHandler(this.OnItemPropertyChanged);
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (Object item in e.OldItems)
+                {
+                    (item as INotifyPropertyChanged).PropertyChanged -= new PropertyChangedEventHandler(this.OnItemPropertyChanged);
+                }
+            }
+        }
+
+        private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            NotifyCollectionChangedEventArgs a = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+            this.OnCollectionChanged(a);
+
+            if (this.ItemPropertyChanged != null)
+            {
+                this.ItemPropertyChanged(sender, e);
+            }
+        }
+    }
+    #endregion
 }
