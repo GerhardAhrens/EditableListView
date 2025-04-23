@@ -9,7 +9,7 @@
 
     public class DemoData
     {
-        public TrulyObservableCollection<ViewItem> Items
+        public NotifyObservableCollection<ViewItem> Items
         {
             get
             {
@@ -33,9 +33,9 @@
             }
         }
 
-        private TrulyObservableCollection<ViewItem> LoadItems()
+        private NotifyObservableCollection<ViewItem> LoadItems()
         {
-            TrulyObservableCollection<ViewItem> items = new TrulyObservableCollection<ViewItem>();
+            NotifyObservableCollection<ViewItem> items = new NotifyObservableCollection<ViewItem>();
 
             items.CollectionChanged += this.OnCollectionChanged;
             items.ItemPropertyChanged += this.PropertyChangedHandler;
@@ -81,7 +81,7 @@
             {
                 string msg = $"{DateTime.Now.ToString()}, Liste geändert";
                 Debug.WriteLine(msg);
-                int count = ((TrulyObservableCollection<ViewItem>)sender).Count;
+                int count = ((NotifyObservableCollection<ViewItem>)sender).Count;
                 StatusbarMain.Statusbar.SetNotification($"Geändert: Anzahl: {count}");
             }
 
@@ -346,11 +346,11 @@
     }
 
     #region TrulyObservableCollection
-    public class TrulyObservableCollection<T> : ObservableCollection<T> where T : INotifyPropertyChanged
+    public class NotifyObservableCollection<T> : ObservableCollection<T> where T : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler ItemPropertyChanged;
 
-        public TrulyObservableCollection() : base()
+        public NotifyObservableCollection() : base()
         {
             this.CollectionChanged += new NotifyCollectionChangedEventHandler(this.OnObservableCollectionChanged);
         }

@@ -73,7 +73,8 @@
                     <Button
                         x:Name="btnFilter"
                         Width="50"
-                        Margin="5,0">
+                        Margin="5,0"
+                        ToolTip="Daten filtern und anzeigen">
                         <Path
                             Data="{StaticResource ResourceKey=IconFilterStart}"
                             Fill="Green"
@@ -101,7 +102,8 @@
                     <Button
                         x:Name="btnGroup"
                         Width="50"
-                        Margin="5,0">
+                        Margin="5,0"
+                        ToolTip="Gruppe Erstellen und Anzeigen">
                         <Path
                             Data="{StaticResource ResourceKey=IconGroupCreate}"
                             Fill="Green"
@@ -247,7 +249,8 @@
                 x:Name="BtnFirst"
                 Width="20"
                 Margin="5,0,0,0"
-                Tag="0">
+                Tag="0"
+                ToolTip="Erster Zeile">
                 <Path
                     Data="{StaticResource ResourceKey=IconFirst}"
                     Fill="Blue"
@@ -258,7 +261,8 @@
                 x:Name="BtnPrevious"
                 Width="20"
                 Margin="5,0,0,0"
-                Tag="1">
+                Tag="1"
+                ToolTip="Vorherige Zeile">
                 <Path
                     Data="{StaticResource ResourceKey=IconArrowPrevious}"
                     Fill="Blue"
@@ -268,7 +272,8 @@
             <Button
                 x:Name="BtnNext"
                 Width="20"
-                Tag="2">
+                Tag="2"
+                ToolTip="Nächste Zeile">
                 <Path
                     Data="{StaticResource ResourceKey=IconArrowNext}"
                     Fill="Blue"
@@ -279,7 +284,8 @@
                 x:Name="BtnLast"
                 Width="20"
                 Margin="5,0,0,0"
-                Tag="3">
+                Tag="3"
+                ToolTip="Letzte Zeile">
                 <Path
                     Data="{StaticResource ResourceKey=IconLast}"
                     Fill="Blue"
@@ -289,7 +295,8 @@
             <Button
                 x:Name="btnShowDetail"
                 Width="30"
-                Margin="20,0,0,0">
+                Margin="20,0,0,0"
+                ToolTip="Aktueller Zeile Anteigen">
                 <Path
                     Data="{StaticResource ResourceKey=IconShowItem}"
                     Fill="Blue"
@@ -299,7 +306,8 @@
             <Button
                 x:Name="btnSave"
                 Width="30"
-                Margin="5,0">
+                Margin="5,0"
+                ToolTip="Änderungen speichern">
                 <Path
                     Data="{StaticResource ResourceKey=IconWriteData}"
                     Fill="Blue"
@@ -309,7 +317,8 @@
             <Button
                 x:Name="btnOpen"
                 Width="30"
-                Margin="5,0">
+                Margin="5,0"
+                ToolTip="Zuvor gespeicherte Daten lesen.">
                 <Path
                     Data="{StaticResource ResourceKey=IconLoadData}"
                     Fill="Blue"

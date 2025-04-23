@@ -127,8 +127,8 @@
                     if (this.ListViewSource.SortDescriptions.Count(lamda) > 0)
                     {
                         SortDescription currentSortDescription = this.ListViewSource.SortDescriptions.First(lamda);
-                        ListSortDirection sortDescription = currentSortDescription.Direction == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;
-
+                        ListSortDirection sortDescription = currentSortDescription.Direction == ListSortDirection.Ascending
+                            ? ListSortDirection.Descending : ListSortDirection.Ascending;
 
                         currentHeader.Column.HeaderTemplate = currentSortDescription.Direction == ListSortDirection.Ascending ?
                             this.Resources["HeaderTemplateArrowDown"] as DataTemplate : this.Resources["HeaderTemplateArrowUp"] as DataTemplate;
@@ -137,7 +137,9 @@
                         this.ListViewSource.SortDescriptions.Insert(0, new SortDescription(currentHeader.Column.Header.ToString(), sortDescription));
                     }
                     else
+                    {
                         this.ListViewSource.SortDescriptions.Add(new SortDescription(currentHeader.Column.Header.ToString(), ListSortDirection.Ascending));
+                    }
                 }
             }
         }
@@ -213,6 +215,7 @@
         {
             if (File.Exists("ListViewDemo.json") == true)
             {
+                StatusbarMain.Statusbar.SetNotification($"Lesen: Anzahl: {0}");
                 string jsonText = File.ReadAllText("ListViewDemo.json");
                 ObservableCollection<ViewItem> list = JsonSerializer.Deserialize<ObservableCollection<ViewItem>>(jsonText);
                 if (this.ListViewSource != null)
@@ -236,8 +239,19 @@
 
         private void OnSaveClick(object sender, RoutedEventArgs e)
         {
+            int count = 0;
+            if (ListViewSource != null)
+            {
+                count = this.ListViewSource.Cast<object>().Count();
+            }
+
+            StatusbarMain.Statusbar.SetNotification($"Speichern: Anzahl: {count}");
+
             string jsonText = JsonSerializer.Serialize<ICollectionView>(this.ListViewSource);
             File.WriteAllText("ListViewDemo.json", jsonText);
+
+            StatusbarMain.Statusbar.SetNotification($"Bereit: Anzahl: {count}");
+
             MessageBox.Show("Aktuelle Ansich nach 'ListViewDemo.json' gespeichert", "Aktuelle Ansicht");
         }
 
