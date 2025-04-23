@@ -17,8 +17,8 @@ In dem Beispiel werden folgende Features gezeigt:
 <img src="MainDialog.png" style="width:750px;"/></br>
 
 
-Die Spalten des Listview werden mit einem Binding zwischen dem DateTemplate und einer Liste (als ObservableCollection) behandelt.
-Als Liste wird als eine Abteilung einer **ObservableCollection** => **NotifyObservableCollection** Diese Eigenimplemntierung dient nicht nur der Überwachung was mit einer Row passiert, sondern stellt zusätzlich die Überwachnung der Spalten zur Verfügung.</br>
+Die Spalten des Listview werden mit einem Binding zwischen dem DateTemplate und einer Liste (als ObservableCollection) behandelt. Das Binding erfolgt über das Interface *ICollectionView* 
+und der Klasse *CollectionViewSource* an dem eine Liste wird als eine Ableitung einer **ObservableCollection** => **NotifyObservableCollection** übergeben wird. Diese Eigenimplemntierung dient nicht nur der Überwachung was mit einer Row passiert, sondern stellt zusätzlich die Überwachung der Spalten zur Verfügung.</br>
 So kann eben auch die Änderung des Zelleninhalts direkt dargestellt werden.
 
 ## Filtern
@@ -50,6 +50,53 @@ Da die Suchen mit *Contains()* erstellt wurde, können auch Teilstrings gesucht w
 </br>
 ## Gruppierung
 
+Mit dem ListView Control ist es auch möglich, eine Liste nach verschiedenen Kriterien zu gruppieren.</br>
+```csharp
+private void OnClickGroup(object sender, RoutedEventArgs e)
+{
+    this.ListViewSource.GroupDescriptions.Clear();
+
+    PropertyInfo pinfo = typeof(ViewItem).GetProperty(cmbGroups.Text);
+    if (pinfo != null)
+    {
+        this.ListViewSource.GroupDescriptions.Add(new PropertyGroupDescription(pinfo.Name));
+    }
+}
+```
+Die Gruppierung wird direkt nach dem erstellen angezeigt.
+</br>
+<img src="Func-Gruppieren.png" style="width:750px;"/></br>
+</br>
+
 ## Navigation
+Eine List ist über das Interface *ICollectionView* an das Listview gebunden.
+
+```csharp
+private void OnNavigationClick(object sender, RoutedEventArgs e)
+{
+    Button CurrentButton = sender as Button;
+
+    switch (CurrentButton.Tag.ToString())
+    {
+        case "0":
+            this.ListViewSource.MoveCurrentToFirst();
+            break;
+        case "1":
+            this.ListViewSource.MoveCurrentToPrevious();
+            break;
+        case "2":
+            this.ListViewSource.MoveCurrentToNext();
+            break;
+        case "3":
+            this.ListViewSource.MoveCurrentToLast();
+            break;
+    }
+
+    this.lvItems.ScrollIntoView(this.ListViewSource.CurrentItem);
+}
+```
+</br>
+<img src="Func-Navigation.png" style="width:550px;"/></br>
+</br>
 
 

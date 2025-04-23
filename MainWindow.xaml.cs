@@ -102,6 +102,7 @@
             this.lvItems.Focus();
 
             this.DataModel = new DemoData();
+
             this.ListViewSource = CollectionViewSource.GetDefaultView(this.DataModel.Items);
 
             this.Columns = this.DataModel.Columns;
